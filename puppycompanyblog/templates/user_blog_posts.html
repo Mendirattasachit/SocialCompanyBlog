@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container">
+    <div class="jumbotron">
+        <div align='center'>
+            <!-- 'user' is variable ie returend in user_posts view! -->
+            <h1>Welcome to the page for {{ user.username }} </h1>
+            <img src="{{ url_for('static', filename='profile_pics/' + user.profile_image) }} " alt="">
+        </div>
+    </div>
+
+
+    {% for post in blog_posts.items %}
+    <!-- 'blog_posts' variable is returned in user_posts view! -->
+    <!-- 'blog_post' is a view that is connected by a post ID, so it allows u to view individual blog post instead of viewing ALL at once -->
+    <!-- We'll display just the title of that Blog Post as title of that anchor -->
+    <h2> <a href=" {{ url_for('blog_posts.blog_post', blog_post_id=post.id) }}  "> {{post.title}} </a> </h2>
+    <!--LINK TO  INDIVIDUAL BLOG POST-->
+    Written By: <a
+        href=" {{ url_for('users.user_posts', username = post.author.username )}}">{{ post.author.username }}</a>
+    <!--POST AUTHOR-->
+    <p class="text-muted">Published On {{ post.date.strftime("%Y-%m-%d") }} </p>
+    <!--POST DATE-->
+    <br>
+    <p> {{ post.text }} </p>
+    <br>
+    {% endfor %}
+</div>
+
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% for page_num in blog_posts.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+        {% if blog_posts.page == page_num %}
+        <!--If ur on Current Page, keep that link disabled!-->
+        <li class="page-item disabled">
+            <a class="page-link"
+                href="{{url_for('users.user_posts', username=user.username, page=page_num)}} ">{{page_num}} </a>
+        </li>
+
+        {% else %}
+
+        <!-- U Can click on some page u r not on, so keep it enabled! -->
+        <li class="page-item">
+            <a class="page-link"
+                href="{{url_for('users.user_posts', username=user.username, page=page_num)}} ">{{page_num}} </a>
+        </li>
+
+        {% endif %}
+
+        {% endfor %}
+
+    </ul>
+</nav>
+
+
+
+
+
+
+
+
+
+{% endblock %}

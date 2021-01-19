@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block content %}
+<!-- SHOW SINGLE BLOG POST -->
+<!-- WE PASSED IN TITLE,DATE AND POST VARIABLE TO THIS TEMPLATE THROUGH VIEWS.PY IN 'blog_post' VIEW ! -->
+
+<div class="jumbotron">
+    <!--TITLE-->
+    <h1>{{post.title}} </h1>
+    <!-- AUTHOR/USERNAME -->
+    <h2>Written By: {{post.author.username}} </h2>
+    <!-- DATE -->
+    <h3>Published On: {{post.date.strftime('%B %d, %Y')}} </h3>
+    <!--BODY OF THE BLOG-->
+    <p> {{post.text}} </p>
+
+    <!-- USER CAN UPDATE HIS BLOG IF HE'S THE AUTHOR OF BLOG! -->
+    {% if post.author == current_user %}
+    <div>
+        <a href="{{ url_for('blog_posts.update',blog_post_id=post.id) }}  ">Update</a> <!-- BLUEPRINT.VIEW -->
+        <!-- DELETE BLOG, data-target contains id -->
+        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#del_modal">Delete</button>
+    </div>
+    {% endif %}
+
+</div>
+
+<!--  MODAL -->
+<div class="modal" tabindex="-1" role="dialog" id="del_modal">
+    <!-- id MUST MATCH WITH ABOVE data-target !! -->
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Post!</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete the post?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                
+                <!-- Redirect to delete_post view, that deletes post and redirects to Home Page-->
+                <form action=" {{ url_for('blog_posts.delete_post', blog_post_id=post.id )}}  ">
+                    <input class="btn btn-danger" type="submit" value="Delete">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
